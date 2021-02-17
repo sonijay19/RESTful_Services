@@ -7,9 +7,9 @@ namespace RESTServices.Controllers.ControllerDTO
 {
     public class DefaultRequestMessage
     {
-        public string UserEmail { get; set; }
+        //public string UserEmail { get; set; }
         public string sortbyParameter { get; set; }
-        public string sortyDirection { get; set; }
+        public string sortbyDirection { get; set; }
         public string FromDate{ get; set; }
         public string ToDate { get; set; }
         public string UserStatus { get; set; }

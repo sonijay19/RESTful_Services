@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using DemoService.BusinessLayer.Entities.Enums;
@@ -15,17 +16,19 @@ namespace RESTful_Services.ClientLayer.Validation
         public RequestMessageValidator()
         {
 
-            RuleFor(person => person.UserEmail).NotNull().NotEmpty().Matches(@"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$")
+            /*RuleFor(person => person.UserEmail).NotNull().NotEmpty().Matches(@"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$")
                 .OnAnyFailure(x =>
                 {
+                    Debug.WriteLine(x.UserEmail);
                     throw new MessageNotValidException(ErrorCodes.INVALID_USER);
-                });
+                });*/
 
 
             RuleFor(person => person.FromDate).NotNull().NotEmpty()
                 .Matches(@"^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$")
                 .OnAnyFailure(x =>
                 {
+                    Debug.WriteLine(x.FromDate);
                     throw new MessageNotValidException(ErrorCodes.INVALID_USER);
                 });
 
@@ -34,6 +37,7 @@ namespace RESTful_Services.ClientLayer.Validation
                 .Matches(@"^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$")
                 .OnAnyFailure(x =>
                 {
+                    Debug.WriteLine(x.ToDate);
                     throw new MessageNotValidException(ErrorCodes.INVALID_USER);
                 });
 
@@ -41,6 +45,7 @@ namespace RESTful_Services.ClientLayer.Validation
             RuleFor(person => person.sortbyParameter).NotNull().NotEmpty()
                 .Custom((parameter, context) =>
                 {
+                    Debug.WriteLine(parameter);
                     if (parameter != "firstname" && parameter != "lastname" &&
                         parameter != "createdDate")
                     {
@@ -49,9 +54,10 @@ namespace RESTful_Services.ClientLayer.Validation
                 });
 
 
-            RuleFor(person => person.sortyDirection).NotNull().NotEmpty()
+            RuleFor(person => person.sortbyDirection).NotNull().NotEmpty()
                 .Custom((parameter, context) =>
                 {
+                    Debug.WriteLine(parameter);
                     if (parameter != "aes" && parameter != "desc")
                     {
                         throw new MessageNotValidException(ErrorCodes.INVALID_USER);
@@ -62,9 +68,10 @@ namespace RESTful_Services.ClientLayer.Validation
             RuleFor(person => person.AccessType).NotNull().NotEmpty()
                 .Custom((parameter, context) =>
                 {
-                    if (parameter != UserTypes.FullAccess.ToString()
-                        && parameter != UserTypes.StandardAccess.ToString()
-                        && parameter != UserTypes.ViewOnlyAccess.ToString())
+                    Debug.WriteLine(parameter);
+                    if (parameter != UserAccessType.FullAccess.ToString()
+                        && parameter != UserAccessType.StandardAccess.ToString()
+                        && parameter != UserAccessType.ViewOnlyAccess.ToString())
                     {
                         throw new MessageNotValidException(ErrorCodes.INVALID_USER);
                     }
@@ -74,9 +81,10 @@ namespace RESTful_Services.ClientLayer.Validation
             RuleFor(person => person.UserStatus).NotNull().NotEmpty()
                 .Custom((parameter, context) =>
                 {
-                    if (parameter != UserStatuses.Active.ToString()
-                        && parameter != UserStatuses.Deleted.ToString()
-                        && parameter != UserStatuses.All.ToString())
+                    Debug.WriteLine(parameter);
+                    if (parameter != UserStatus.Active.ToString()
+                        && parameter != UserStatus.Deleted.ToString()
+                        && parameter != UserStatus.All.ToString())
                     {
                         throw new MessageNotValidException(ErrorCodes.INVALID_USER);
                     }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Linq;
 using System.Web;
 using DemoService.BusinessLayer;
@@ -19,25 +20,34 @@ namespace DemoService.ClientLayer
     {
         public string UserValidate(DefaultRequestMessage userDetails)
         {
-            DefaultRequestMessage userInfo = new DefaultRequestMessage();
-            userInfo = userDetails;
             DefaultResponseMessages response = new DefaultResponseMessages();
             try
             {
                 RequestMessageValidator validator = new RequestMessageValidator();
-                var result = validator.Validate(userInfo);
-                if (result.IsValid)
+                var result = validator.Validate(userDetails);
+                if (!(userDetails is null))
                 {
-                    return "thai gayu bhai";
+                    if (result.IsValid)
+                    {
+                        var userInfoNew = ServiceManager.GetInstance().GetUserInformation()
+                            .GetUserDetails(userDetails);
+                        if (userInfoNew != null)
+                        {
+                            //Debug.WriteLine("Ahiya sudhi aavi gaya");
+                            return "thai gayu";
+                        }
+                        throw new MessageNotValidException(ErrorCodes.INVALID_USER);
+                    }
+                    throw new MessageNotValidException(ErrorCodes.ERROR_FROM_VALIDATE);
                 }
-                return "false";
+                throw new MessageNotValidException(ErrorCodes.INVALID_USER);
                 //GetUserDetailsService buisness = new GetUserDetailsService();
-                //var buisness = ServiceManager.GetInstance().GetUserAuthentication();
+                //var buisness = ServiceManager.GetInstance().GetUserInformation();
                 /*if (!ValidateEmail.ValidateRequestMessages(userDetails))
                 {
                     throw new MessageNotValidException(ErrorCodes.INVALID_USER);
                 }
-                if (ServiceManager.GetInstance().GetUserAuthentication().GetUserDetails(userDetails))
+                if (ServiceManager.GetInstance().GetUserInformation().GetUserDetails(userDetails))
                 {
                     response.Success = true;
                     return response;
@@ -48,13 +58,13 @@ namespace DemoService.ClientLayer
             {
                 response.ErrorCode = e._errorConstants.ToString();
                 response.Success = false;
-                return "false";
+                return "false not valid";
             }
             catch (TimeoutException e)
             {
                 response.ErrorCode = ErrorCodes.INTERNAL_SERVER_ERROR.ToString();
                 response.Success = false;
-                return "false";
+                return "false time out";
 
             }
         }

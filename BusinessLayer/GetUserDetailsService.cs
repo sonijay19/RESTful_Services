@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using DemoService.BusinessLayer.DTO;
+using RESTful_Services.BusinessLayer.Entities.DTO;
 using RESTServices.BusinessLayer.Interface;
 using RESTServices.Controllers.ControllerDTO;
 using RESTServices.Controllers.ResponseMessage;
@@ -30,24 +31,24 @@ namespace RESTServices.BusinessLayer
                 return _instance;
             }
         }
-        public bool GetUserDetails(DefaultRequestMessage user)
+        public List<UserInformation> GetUserDetails(DefaultRequestMessage user)
         {
             var config = new MapperConfiguration(cfg =>
-                cfg.CreateMap<UserInformation, UserInfo>()
+                cfg.CreateMap<DefaultRequestMessage, BusinessReuqestMessage>()
             );
 
-            UserInfo userInformation = new UserInfo();
-            var userEmail = config.CreateMapper();
-            userInformation = userEmail.Map<UserInfo>(user);
+            BusinessReuqestMessage requestMessage = new BusinessReuqestMessage();
+            var mapperBusiness = config.CreateMapper();
+            requestMessage = mapperBusiness.Map<BusinessReuqestMessage>(user);
             var userInfo = DAOServiceManager.GetInstance().GetAuthenticateUserByEmail()
-                .AuthenticateUser(userInformation.UserEmail);
+                .GetAllUserDetails(requestMessage);
 
             if (userInfo == null)
             {
-                return false;
+                return userInfo;
             }
 
-            return true;
+            return null;
         }
     }
 }

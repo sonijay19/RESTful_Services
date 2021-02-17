@@ -11,13 +11,14 @@ namespace DemoService.ClientLayer
     {
         public static bool ValidateRequestMessages(DefaultRequestMessage userInfo)
         {
-            Regex emailRegex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
+            /*Regex emailRegex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
             Match match = emailRegex.Match(userInfo.UserEmail);
             if (match.Success)
             {
                 return true;
             }
-            return false;
+            return false;*/
+            return true;
         }
     }
 }

@@ -5,14 +5,14 @@ using System.Threading.Tasks;
 
 namespace RESTful_Services.BusinessLayer.Entities.Enums
 {
-    public enum UserStatuses
+    public enum UserStatus
     {
         Active,
         Deleted,
         All,
     }
 
-    public enum UserTypes
+    public enum UserAccessType
     {
         FullAccess,
         StandardAccess,

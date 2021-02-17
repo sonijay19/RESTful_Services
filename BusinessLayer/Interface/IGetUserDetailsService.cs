@@ -9,6 +9,6 @@ namespace RESTServices.BusinessLayer.Interface
 {
     public interface IGetUserDetailsService
     {
-        bool GetUserDetails(DefaultRequestMessage user);
+        List<UserInformation> GetUserDetails(DefaultRequestMessage user);
     }
 }

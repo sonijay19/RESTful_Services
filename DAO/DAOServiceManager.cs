@@ -15,7 +15,7 @@ namespace RESTServices.DAO
             return daoserviceManagerInstance;
         }
 
-        public IAuthenticateUserByEmail GetAuthenticateUserByEmail()
+        public IGetUserInformation GetAuthenticateUserByEmail()
         {
             return GetUserInformationDB.Instance;
         }

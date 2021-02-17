@@ -15,27 +15,16 @@ namespace RESTful_Services.Controllers
     [Route("[controller]")]
     public class GetUserDetailsController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
-
-        private readonly ILogger<GetUserDetailsController> _logger;
-
-        public GetUserDetailsController(ILogger<GetUserDetailsController> logger)
-        {
-            _logger = logger;
-        }
-
+        
         [HttpPost]
-        public Object Post(DefaultRequestMessage userRequestMessage)
+        public string Post(DefaultRequestMessage userRequestMessage)
         {
             RequestProcessor client = new RequestProcessor();
             var message = client.UserValidate(userRequestMessage);
             //return message;
             List<string> arr = new List<string>();
             arr.Add(message);
-            return arr;
+            return message;
         }
     }
 }

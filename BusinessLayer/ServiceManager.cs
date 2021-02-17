@@ -15,7 +15,7 @@ namespace RESTServices.BusinessLayer
             return serviceManagerInstance;
         }
 
-        public IGetUserDetailsService GetUserAuthentication()
+        public IGetUserDetailsService GetUserInformation()
         {
             return GetUserDetailsService.Instance;
         }
