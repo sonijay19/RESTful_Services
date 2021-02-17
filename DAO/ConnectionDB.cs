@@ -13,7 +13,7 @@ namespace RESTServices.DAO
         {
 
             string connectionstring =
-                "Data Source=DESKTOP-02T0GUH\\SQLEXPRESS;Initial Catalog = UserInfo; User ID = DESKTOP-02T0GUH\\sonij; Password='';Integrated Security=true";
+                "Data Source=DESKTOP-02T0GUH\\SQLEXPRESS;Initial Catalog = UserDetails; User ID = DESKTOP-02T0GUH\\sonij; Password='';Integrated Security=true";
             try
             {
                 conn = new SqlConnection(connectionstring);

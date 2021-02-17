@@ -43,11 +43,10 @@ namespace RESTServices.BusinessLayer
             var userInfo = DAOServiceManager.GetInstance().GetAuthenticateUserByEmail()
                 .GetAllUserDetails(requestMessage);
 
-            if (userInfo == null)
+            if (userInfo != null)
             {
                 return userInfo;
             }
-
             return null;
         }
     }

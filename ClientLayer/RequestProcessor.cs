@@ -18,7 +18,7 @@ namespace DemoService.ClientLayer
 {
     public class RequestProcessor
     {
-        public string UserValidate(DefaultRequestMessage userDetails)
+        public DefaultResponseMessages UserValidate(DefaultRequestMessage userDetails)
         {
             DefaultResponseMessages response = new DefaultResponseMessages();
             try
@@ -33,8 +33,9 @@ namespace DemoService.ClientLayer
                             .GetUserDetails(userDetails);
                         if (userInfoNew != null)
                         {
-                            //Debug.WriteLine("Ahiya sudhi aavi gaya");
-                            return "thai gayu";
+                            response.Total_Count = userInfoNew.Count;
+                            response.userDetails = userInfoNew;
+                            return response;
                         }
                         throw new MessageNotValidException(ErrorCodes.INVALID_USER);
                     }
@@ -56,15 +57,15 @@ namespace DemoService.ClientLayer
             }
             catch (MessageNotValidException e)
             {
-                response.ErrorCode = e._errorConstants.ToString();
-                response.Success = false;
-                return "false not valid";
+                //response.ErrorCode = e._errorConstants.ToString();
+                //response.Success = false;
+                return null;
             }
             catch (TimeoutException e)
             {
-                response.ErrorCode = ErrorCodes.INTERNAL_SERVER_ERROR.ToString();
-                response.Success = false;
-                return "false time out";
+                //response.ErrorCode = ErrorCodes.INTERNAL_SERVER_ERROR.ToString();
+                //response.Success = false;
+                return null;
 
             }
         }

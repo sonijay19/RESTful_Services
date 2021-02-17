@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DemoService.BusinessLayer.Entities.Enums;
+using RESTServices.DAO;
 
 namespace RESTServices.Controllers.ResponseMessage
 {
     public class DefaultResponseMessages
     {
-        public bool Success { get; set; } 
-        public string? ErrorCode { get; set; }
+        public int Total_Count { get; set; }
+        public List<UserInformation> userDetails{ get; set; }
     }
 }

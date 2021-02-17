@@ -58,7 +58,7 @@ namespace RESTful_Services.ClientLayer.Validation
                 .Custom((parameter, context) =>
                 {
                     Debug.WriteLine(parameter);
-                    if (parameter != "aes" && parameter != "desc")
+                    if (parameter != "asc" && parameter != "desc")
                     {
                         throw new MessageNotValidException(ErrorCodes.INVALID_USER);
                     }
