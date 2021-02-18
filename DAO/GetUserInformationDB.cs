@@ -21,6 +21,18 @@ namespace RESTServices.DAO
             string sortQury=$"{sortbyparams} {sortbydirection}";
             return sortQury;
         }
+        private static string GetUserStatus(string userType)
+        {
+            if(userType == UserStatus.Active.ToString())
+            {
+                return "UserDetails.IsDeleted = 0 AND";
+            }
+            if(userType == UserStatus.Deleted.ToString())
+            {
+                return "UserDetails.IsDeleted = 1 AND";
+            }
+            return null;
+        }
         private SqlConnection conn;
         public GetUserInformationDB()
         {
@@ -51,13 +63,12 @@ namespace RESTServices.DAO
             string newquery = getQuery.GetDetailQuery("SortActiveUserDetails", UserStatus.All,UserDetails.sortbyParameter,UserDetails.sortbyDirection);
             //Debug.WriteLine("Query is " + newquery);
             string getdirection = GetSortDirection(UserDetails.sortbyDirection, UserDetails.sortbyParameter);
-            string query = "SELECT UserDetails.UserEmail,UserDetails.firstName,UserDetails.lastName,UserTypeStatus.StatusCode,UserDetails.CreatedDate,UserDetails.ModifiedDate,UserDetails.IsDeleted FROM UserDetails INNER JOIN UserTypeStatus ON UserTypeStatus.TypeId = UserDetails.UserTypeId WHERE UserTypeStatus.StatusCode = @UserType AND CreatedDate BETWEEN convert(date,@fromDate,103) and convert(date,@toDate,103) ORDER BY {sortby}";
-            var queryFormmating = query.Replace("{sortby}", getdirection);
-            using (SqlCommand cmd = new SqlCommand(newquery, conn))
+            //string query = "SELECT UserDetails.UserEmail,UserDetails.firstName,UserDetails.lastName,UserTypeStatus.StatusCode,UserDetails.CreatedDate,UserDetails.ModifiedDate,UserDetails.IsDeleted FROM UserDetails INNER JOIN UserTypeStatus ON UserTypeStatus.TypeId = UserDetails.UserTypeId WHERE {useracess} UserTypeStatus.StatusCode = @UserType AND CreatedDate BETWEEN convert(date,@fromDate,103) and convert(date,@toDate,103) ORDER BY {sortby}";
+            var queryFormmating = newquery.Replace("{sortby}", getdirection);
+            var querynewone = queryFormmating.Replace("{useracess}", GetUserStatus(UserDetails.UserStatus));
+            using (SqlCommand cmd = new SqlCommand(querynewone, conn))
             {
                 cmd.CommandType = CommandType.Text;
-                //UserDetails.Email,UserDetails.firstName,UserDetails.lastName,UserTypeStatus.StatusCode,UserDetails.CreatedDate,UserDetails.ModifiedDate
-                // @UserType ORDER BY @sortbyParameter @sortbyDirection @fromDate @toDate
                 conn.Open();
                 cmd.Parameters.AddWithValue("@UserType", UserDetails.AccessType);
                 cmd.Parameters.AddWithValue("@fromDate", UserDetails.FromDate);
@@ -79,12 +90,9 @@ namespace RESTServices.DAO
                                 UserStatus = reader["StatusCode"].ToString(),
                             }
                         );
-                        Debug.WriteLine(UserInfo.Count);
-                        conn.Close();
-                        return UserInfo;
                     }
                     conn.Close();
-                    return null;
+                    return UserInfo;
                 }
             }
         }

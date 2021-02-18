@@ -31,10 +31,10 @@ namespace RESTServices.BusinessLayer
                 return _instance;
             }
         }
-        public List<UserInformation> GetUserDetails(DefaultRequestMessage user)
+        public List<UserInformation> GetUserDetails(UserDetailRequestMessage user)
         {
             var config = new MapperConfiguration(cfg =>
-                cfg.CreateMap<DefaultRequestMessage, BusinessReuqestMessage>()
+                cfg.CreateMap<UserDetailRequestMessage, BusinessReuqestMessage>()
             );
 
             BusinessReuqestMessage requestMessage = new BusinessReuqestMessage();

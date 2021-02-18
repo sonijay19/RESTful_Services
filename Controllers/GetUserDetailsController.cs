@@ -18,30 +18,25 @@ using Microsoft.AspNetCore.Mvc;
 namespace RESTful_Services.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/v1/Users")]
     public class GetUserDetailsController : ControllerBase
     {
-        // async
         [HttpGet]
-        public HttpResponseMessage Get(DefaultRequestMessage userRequestMessage)
+        public IActionResult Get(UserDetailRequestMessage userRequestMessage)
         {
             HttpRequestMessage httpResquest = new HttpRequestMessage();
             var res = new HttpResponseMessage();
             RequestProcessor client = new RequestProcessor();
             //UserDetailrequest mesg same for response
-            DefaultResponseMessages message = client.UserValidate(userRequestMessage);
+            UserDetailsResponseMessages message = client.UserValidate(userRequestMessage);
 
-            if (message == null)
+            if (message.userDetails == null)
             {
-                res.StatusCode = HttpStatusCode.NotFound;
-                res.Content = new StringContent("Can't find any user", Encoding.UTF8, "application/json");
-                return res;
+                return Ok(message);
                 //httpResquest.CreateErrorResponse(HttpStatusCode.NotFound, "Can not find any user");
                 //return Request.CreateErrorResponse(HttpStatusCode.NotFound, "Can not find");
             }
-            res.StatusCode = HttpStatusCode.OK;
-            res.Content = new ObjectContent<String>(JsonConvert.SerializeObject(message), new JsonMediaTypeFormatter());
-            return res;
+            return Ok(message);
             //return httpResquest.CreateResponse(HttpStatusCode.OK,message);
             //return Request.CreateResponse<DefaultResponseMessages>(HttpStatusCode.OK, message);
         }

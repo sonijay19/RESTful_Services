@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace RESTServices.Controllers.ControllerDTO
 {
-    public class DefaultRequestMessage
+    public class UserDetailRequestMessage
     {
         //public string UserEmail { get; set; }
         public string sortbyParameter { get; set; }
