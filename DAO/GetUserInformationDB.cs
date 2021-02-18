@@ -14,9 +14,13 @@ using RESTServices.DAO.Interface;
 
 namespace RESTServices.DAO
 {
-
     public class GetUserInformationDB : IGetUserInformation
     {
+        private static string GetSortDirection(string sortbydirection, string sortbyparams)
+        {
+            string sortQury=$"{sortbyparams} {sortbydirection}";
+            return sortQury;
+        }
         private SqlConnection conn;
         public GetUserInformationDB()
         {
@@ -45,12 +49,10 @@ namespace RESTServices.DAO
             List<UserInformation> UserInfo = new List<UserInformation>();
             GetQueryByProperties getQuery = new GetQueryByProperties();
             string newquery = getQuery.GetDetailQuery("SortActiveUserDetails", UserStatus.All,UserDetails.sortbyParameter,UserDetails.sortbyDirection);
-            Debug.WriteLine("Query is " + newquery);
-            string query = "SELECT UserDetails.UserEmail,UserDetails.firstName,UserDetails.lastName,UserTypeStatus.StatusCode,UserDetails.CreatedDate,UserDetails.ModifiedDate,UserDetails.IsDeleted FROM UserDetails INNER JOIN UserTypeStatus ON UserTypeStatus.TypeId = UserDetails.UserTypeId WHERE UserTypeStatus.StatusCode = @UserType AND CreatedDate BETWEEN convert(date,@fromDate,103) and convert(date,@toDate,103) ORDER BY firstname ASC;";
-            if (newquery == query)
-            {
-                Debug.WriteLine("Same to same chhe");
-            }
+            //Debug.WriteLine("Query is " + newquery);
+            string getdirection = GetSortDirection(UserDetails.sortbyDirection, UserDetails.sortbyParameter);
+            string query = "SELECT UserDetails.UserEmail,UserDetails.firstName,UserDetails.lastName,UserTypeStatus.StatusCode,UserDetails.CreatedDate,UserDetails.ModifiedDate,UserDetails.IsDeleted FROM UserDetails INNER JOIN UserTypeStatus ON UserTypeStatus.TypeId = UserDetails.UserTypeId WHERE UserTypeStatus.StatusCode = @UserType AND CreatedDate BETWEEN convert(date,@fromDate,103) and convert(date,@toDate,103) ORDER BY {sortby}";
+            var queryFormmating = query.Replace("{sortby}", getdirection);
             using (SqlCommand cmd = new SqlCommand(newquery, conn))
             {
                 cmd.CommandType = CommandType.Text;
@@ -64,8 +66,7 @@ namespace RESTServices.DAO
                 cmd.Parameters.AddWithValue("@sortbyDirection", UserDetails.sortbyDirection);
 
                 using (SqlDataReader reader = cmd.ExecuteReader())
-                { 
-                    Debug.WriteLine("Ahiya pochi jay chhe");
+                {
                     while (reader.Read())
                     {
                         UserInfo.Add(

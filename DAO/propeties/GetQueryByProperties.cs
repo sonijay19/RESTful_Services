@@ -31,7 +31,8 @@ namespace RESTful_Services.DAO.propeties
                                         "INNER JOIN UserTypeStatus ON UserTypeStatus.TypeId = UserDetails.UserTypeId " +
                                         "WHERE UserTypeStatus.StatusCode = @UserType " +
                                         "AND CreatedDate BETWEEN convert(date,@fromDate,103) and convert(date,@toDate,103) " +
-                                        "ORDER BY firstname asc";
+                                        "ORDER BY {sortby}";
+                                    // method create => string
                                     return query;
                                 case "desc":
                                     query =

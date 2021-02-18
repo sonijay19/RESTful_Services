@@ -10,5 +10,7 @@ namespace DemoService.BusinessLayer.Entities.Enums
         INVALID_USER,
         INTERNAL_SERVER_ERROR,
         ERROR_FROM_VALIDATE,
+        INVALID_SORTBYPARAMETE,
+        //add
     }
 }

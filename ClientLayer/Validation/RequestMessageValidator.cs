@@ -45,10 +45,12 @@ namespace RESTful_Services.ClientLayer.Validation
             RuleFor(person => person.sortbyParameter).NotNull().NotEmpty()
                 .Custom((parameter, context) =>
                 {
+                    // create list check whether contain or not 
                     Debug.WriteLine(parameter);
                     if (parameter != "firstname" && parameter != "lastname" &&
                         parameter != "createdDate")
                     {
+                        // Business Exception
                         throw new MessageNotValidException(ErrorCodes.INVALID_USER);
                     }
                 });
@@ -57,6 +59,7 @@ namespace RESTful_Services.ClientLayer.Validation
             RuleFor(person => person.sortbyDirection).NotNull().NotEmpty()
                 .Custom((parameter, context) =>
                 {
+                    // Enums
                     Debug.WriteLine(parameter);
                     if (parameter != "asc" && parameter != "desc")
                     {
@@ -81,6 +84,7 @@ namespace RESTful_Services.ClientLayer.Validation
             RuleFor(person => person.UserStatus).NotNull().NotEmpty()
                 .Custom((parameter, context) =>
                 {
+                    // null => all
                     Debug.WriteLine(parameter);
                     if (parameter != UserStatus.Active.ToString()
                         && parameter != UserStatus.Deleted.ToString()

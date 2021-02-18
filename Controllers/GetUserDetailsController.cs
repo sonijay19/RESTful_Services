@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +13,7 @@ using System.Net.Http.Formatting;
 using System.Text;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Mvc;
 
 namespace RESTful_Services.Controllers
 {
@@ -21,13 +21,14 @@ namespace RESTful_Services.Controllers
     [Route("[controller]")]
     public class GetUserDetailsController : ControllerBase
     {
-        
-        [HttpPost]
-        public HttpResponseMessage Post(DefaultRequestMessage userRequestMessage)
+        // async
+        [HttpGet]
+        public HttpResponseMessage Get(DefaultRequestMessage userRequestMessage)
         {
             HttpRequestMessage httpResquest = new HttpRequestMessage();
             var res = new HttpResponseMessage();
             RequestProcessor client = new RequestProcessor();
+            //UserDetailrequest mesg same for response
             DefaultResponseMessages message = client.UserValidate(userRequestMessage);
 
             if (message == null)
