@@ -18,9 +18,9 @@ namespace DemoService.ClientLayer
 {
     public class RequestProcessor
     {
-        public UserDetailsResponseMessages UserValidate(UserDetailRequestMessage userDetails)
+        public DefaultResponseMessages UserValidate(DefaultRequestMessage userDetails)
         {
-            UserDetailsResponseMessages response = new UserDetailsResponseMessages();
+            DefaultResponseMessages response = new DefaultResponseMessages();
             try
             {
                 RequestMessageValidator validator = new RequestMessageValidator();
@@ -57,15 +57,15 @@ namespace DemoService.ClientLayer
             }
             catch (MessageNotValidException e)
             {
-                response.ErrorCodes = e._errorConstants.ToString();
+                //response.ErrorCode = e._errorConstants.ToString();
                 //response.Success = false;
-                return response;
+                return null;
             }
             catch (TimeoutException e)
             {
-                response.ErrorCodes = ErrorCodes.INTERNAL_SERVER_ERROR.ToString();
+                //response.ErrorCode = ErrorCodes.INTERNAL_SERVER_ERROR.ToString();
                 //response.Success = false;
-                return response;
+                return null;
 
             }
         }

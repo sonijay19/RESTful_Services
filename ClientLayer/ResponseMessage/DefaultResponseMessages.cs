@@ -7,11 +7,9 @@ using RESTServices.DAO;
 
 namespace RESTServices.Controllers.ResponseMessage
 {
-    public class UserDetailsResponseMessages
+    public class DefaultResponseMessages
     {
         public int Total_Count { get; set; }
         public List<UserInformation> userDetails{ get; set; }
-
-        public string? ErrorCodes { get; set; }
     }
 }

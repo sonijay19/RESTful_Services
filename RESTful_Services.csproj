@@ -11,7 +11,6 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="5.1.1" />
     <PackageReference Include="FluentValidation" Version="9.5.1" />
-    <PackageReference Include="ini-parser" Version="2.5.2" />
     <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.7" />
     <PackageReference Include="StackifyHttpModule" Version="1.0.28" />
     <PackageReference Include="System.Data.SqlClient" Version="4.3.0" />

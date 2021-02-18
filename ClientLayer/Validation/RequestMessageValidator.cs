@@ -6,22 +6,30 @@ using System.Threading.Tasks;
 using DemoService.BusinessLayer.Entities.Enums;
 using DemoService.Exceptions;
 using FluentValidation;
-using RESTful_Services.BusinessLayer.Entities;
 using RESTful_Services.BusinessLayer.Entities.Enums;
 using RESTServices.Controllers.ControllerDTO;
 
 namespace RESTful_Services.ClientLayer.Validation
 {
-    public class RequestMessageValidator : AbstractValidator<UserDetailRequestMessage>
+    public class RequestMessageValidator : AbstractValidator<DefaultRequestMessage>
     {
         public RequestMessageValidator()
         {
+
+            /*RuleFor(person => person.UserEmail).NotNull().NotEmpty().Matches(@"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$")
+                .OnAnyFailure(x =>
+                {
+                    Debug.WriteLine(x.UserEmail);
+                    throw new MessageNotValidException(ErrorCodes.INVALID_USER);
+                });*/
+
+
             RuleFor(person => person.FromDate).NotNull().NotEmpty()
                 .Matches(@"^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$")
                 .OnAnyFailure(x =>
                 {
                     Debug.WriteLine(x.FromDate);
-                    throw new MessageNotValidException(ErrorCodes.INVALID_DATE);
+                    throw new MessageNotValidException(ErrorCodes.INVALID_USER);
                 });
 
 
@@ -30,19 +38,18 @@ namespace RESTful_Services.ClientLayer.Validation
                 .OnAnyFailure(x =>
                 {
                     Debug.WriteLine(x.ToDate);
-                    throw new MessageNotValidException(ErrorCodes.INVALID_DATE);
+                    throw new MessageNotValidException(ErrorCodes.INVALID_USER);
                 });
 
 
             RuleFor(person => person.sortbyParameter).NotNull().NotEmpty()
                 .Custom((parameter, context) =>
                 {
-                    // create list check whether contain or not 
                     Debug.WriteLine(parameter);
-                    if (!Constant.Parameters.Contains(parameter))
+                    if (parameter != "firstname" && parameter != "lastname" &&
+                        parameter != "createdDate")
                     {
-                        // Business Exception
-                        throw new MessageNotValidException(ErrorCodes.INVALID_SORTBYPARAMETER);
+                        throw new MessageNotValidException(ErrorCodes.INVALID_USER);
                     }
                 });
 
@@ -50,11 +57,10 @@ namespace RESTful_Services.ClientLayer.Validation
             RuleFor(person => person.sortbyDirection).NotNull().NotEmpty()
                 .Custom((parameter, context) =>
                 {
-                    // Enums
                     Debug.WriteLine(parameter);
-                    if (!Constant.Directions.Contains(parameter))
+                    if (parameter != "asc" && parameter != "desc")
                     {
-                        throw new MessageNotValidException(ErrorCodes.INVALID_SORTBY_DIRECTION);
+                        throw new MessageNotValidException(ErrorCodes.INVALID_USER);
                     }
                 });
 
@@ -67,7 +73,7 @@ namespace RESTful_Services.ClientLayer.Validation
                         && parameter != UserAccessType.StandardAccess.ToString()
                         && parameter != UserAccessType.ViewOnlyAccess.ToString())
                     {
-                        throw new MessageNotValidException(ErrorCodes.INVALID_USER_ACCESSTYPE);
+                        throw new MessageNotValidException(ErrorCodes.INVALID_USER);
                     }
                 });
 
@@ -75,13 +81,12 @@ namespace RESTful_Services.ClientLayer.Validation
             RuleFor(person => person.UserStatus).NotNull().NotEmpty()
                 .Custom((parameter, context) =>
                 {
-                    // null => all
                     Debug.WriteLine(parameter);
                     if (parameter != UserStatus.Active.ToString()
                         && parameter != UserStatus.Deleted.ToString()
                         && parameter != UserStatus.All.ToString())
                     {
-                        throw new MessageNotValidException(ErrorCodes.INVALID_USER_STATUS);
+                        throw new MessageNotValidException(ErrorCodes.INVALID_USER);
                     }
                 });
 

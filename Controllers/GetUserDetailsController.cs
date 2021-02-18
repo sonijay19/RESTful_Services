@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,30 +14,33 @@ using System.Net.Http.Formatting;
 using System.Text;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
-using Microsoft.AspNetCore.Mvc;
 
 namespace RESTful_Services.Controllers
 {
     [ApiController]
-    [Route("api/v1/Users")]
+    [Route("[controller]")]
     public class GetUserDetailsController : ControllerBase
     {
-        [HttpGet]
-        public IActionResult Get(UserDetailRequestMessage userRequestMessage)
+        
+        [HttpPost]
+        public HttpResponseMessage Post(DefaultRequestMessage userRequestMessage)
         {
             HttpRequestMessage httpResquest = new HttpRequestMessage();
             var res = new HttpResponseMessage();
             RequestProcessor client = new RequestProcessor();
-            //UserDetailrequest mesg same for response
-            UserDetailsResponseMessages message = client.UserValidate(userRequestMessage);
+            DefaultResponseMessages message = client.UserValidate(userRequestMessage);
 
-            if (message.userDetails == null)
+            if (message == null)
             {
-                return Ok(message);
+                res.StatusCode = HttpStatusCode.NotFound;
+                res.Content = new StringContent("Can't find any user", Encoding.UTF8, "application/json");
+                return res;
                 //httpResquest.CreateErrorResponse(HttpStatusCode.NotFound, "Can not find any user");
                 //return Request.CreateErrorResponse(HttpStatusCode.NotFound, "Can not find");
             }
-            return Ok(message);
+            res.StatusCode = HttpStatusCode.OK;
+            res.Content = new ObjectContent<String>(JsonConvert.SerializeObject(message), new JsonMediaTypeFormatter());
+            return res;
             //return httpResquest.CreateResponse(HttpStatusCode.OK,message);
             //return Request.CreateResponse<DefaultResponseMessages>(HttpStatusCode.OK, message);
         }
