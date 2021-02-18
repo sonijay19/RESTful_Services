@@ -15,5 +15,6 @@ namespace DemoService.BusinessLayer.Entities.Enums
         INVALID_DATE,
         INVALID_USER_STATUS,
         INVALID_USER_ACCESSTYPE,
+        INVALID_FROMDATE,
     }
 }

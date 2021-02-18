@@ -18,29 +18,18 @@ using Newtonsoft.Json;
 namespace RESTful_Services.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/v1/Users")]
     public class GetUserDetailsController : ControllerBase
     {
         
-        [HttpPost]
-        public HttpResponseMessage Post(DefaultRequestMessage userRequestMessage)
+        [HttpGet]
+        public IActionResult Get(UserDetailRequestMessage userRequestMessage)
         {
             HttpRequestMessage httpResquest = new HttpRequestMessage();
             var res = new HttpResponseMessage();
             RequestProcessor client = new RequestProcessor();
-            DefaultResponseMessages message = client.UserValidate(userRequestMessage);
-
-            if (message == null)
-            {
-                res.StatusCode = HttpStatusCode.NotFound;
-                res.Content = new StringContent("Can't find any user", Encoding.UTF8, "application/json");
-                return res;
-                //httpResquest.CreateErrorResponse(HttpStatusCode.NotFound, "Can not find any user");
-                //return Request.CreateErrorResponse(HttpStatusCode.NotFound, "Can not find");
-            }
-            res.StatusCode = HttpStatusCode.OK;
-            res.Content = new ObjectContent<String>(JsonConvert.SerializeObject(message), new JsonMediaTypeFormatter());
-            return res;
+            UserDetailResponseMessages message = client.UserValidate(userRequestMessage);
+            return Ok(message);
             //return httpResquest.CreateResponse(HttpStatusCode.OK,message);
             //return Request.CreateResponse<DefaultResponseMessages>(HttpStatusCode.OK, message);
         }

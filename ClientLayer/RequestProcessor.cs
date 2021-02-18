@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Web;
 using DemoService.BusinessLayer;
 using DemoService.BusinessLayer.Entities.Enums;
 using DemoService.Exceptions;
+using FluentValidation;
 using RESTful_Services.ClientLayer.Validation;
 using RESTServices.BusinessLayer;
 using RESTServices.BusinessLayer.Interface;
@@ -18,11 +20,17 @@ namespace DemoService.ClientLayer
 {
     public class RequestProcessor
     {
-        public DefaultResponseMessages UserValidate(DefaultRequestMessage userDetails)
+        public UserDetailResponseMessages UserValidate(UserDetailRequestMessage userDetails)
         {
-            DefaultResponseMessages response = new DefaultResponseMessages();
+            UserDetailResponseMessages response = new UserDetailResponseMessages();
             try
             {
+                DateTime fromDate = DateTime.ParseExact(userDetails.FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                DateTime toDate = DateTime.ParseExact(userDetails.ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                if (DateTime.Compare(fromDate, toDate) >= 0)
+                {
+                    throw new MessageNotValidException(ErrorCodes.INVALID_FROMDATE);
+                }
                 RequestMessageValidator validator = new RequestMessageValidator();
                 var result = validator.Validate(userDetails);
                 if (!(userDetails is null))
@@ -57,15 +65,13 @@ namespace DemoService.ClientLayer
             }
             catch (MessageNotValidException e)
             {
-                //response.ErrorCode = e._errorConstants.ToString();
-                //response.Success = false;
-                return null;
+                response.ErrorCodes = e._errorConstants.ToString();
+                return response;
             }
             catch (TimeoutException e)
             {
-                //response.ErrorCode = ErrorCodes.INTERNAL_SERVER_ERROR.ToString();
-                //response.Success = false;
-                return null;
+                response.ErrorCodes = ErrorCodes.INTERNAL_SERVER_ERROR.ToString();
+                return response;
 
             }
         }

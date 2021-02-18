@@ -40,18 +40,34 @@ namespace RESTServices.DAO
             }
         }
 
+        public static string GetDirectionQuery(string parameter, string direction)
+        {
+            return $"{parameter} {direction}";
+        }
+
+        public static string GetstatusQuery(string userStatus)
+        {
+            if(userStatus == UserStatus.Active.ToString())
+            {
+                return "UserDetails.IsDeleted = 0 AND";
+            }
+            if(userStatus == UserStatus.Deleted.ToString())
+            {
+                return "UserDetails.IsDeleted = 1 AND";
+            }
+            return null;
+        }
+
         public List<UserInformation> GetAllUserDetails(BusinessReuqestMessage UserDetails)
         {
             List<UserInformation> UserInfo = new List<UserInformation>();
             GetQueryByProperties getQuery = new GetQueryByProperties();
-            string newquery = getQuery.GetDetailQuery("SortActiveUserDetails", UserStatus.All,UserDetails.sortbyParameter,UserDetails.sortbyDirection);
-            Debug.WriteLine("Query is " + newquery);
-            string query = "SELECT UserDetails.UserEmail,UserDetails.firstName,UserDetails.lastName,UserTypeStatus.StatusCode,UserDetails.CreatedDate,UserDetails.ModifiedDate,UserDetails.IsDeleted FROM UserDetails INNER JOIN UserTypeStatus ON UserTypeStatus.TypeId = UserDetails.UserTypeId WHERE UserTypeStatus.StatusCode = @UserType AND CreatedDate BETWEEN convert(date,@fromDate,103) and convert(date,@toDate,103) ORDER BY firstname ASC;";
-            if (newquery == query)
-            {
-                Debug.WriteLine("Same to same chhe");
-            }
-            using (SqlCommand cmd = new SqlCommand(newquery, conn))
+            string query = getQuery.GetDetailQuery("SortActiveUserDetails", UserStatus.All,UserDetails.sortbyParameter,UserDetails.sortbyDirection);
+            //Debug.WriteLine("Query is " + newquery);
+            string updateQuery = query.Replace("{sortby}", GetDirectionQuery(UserDetails.sortbyParameter, UserDetails.sortbyDirection));
+            updateQuery = updateQuery.Replace("{useracess}",GetstatusQuery(UserDetails.UserStatus));
+            //string query = "SELECT UserDetails.UserEmail,UserDetails.firstName,UserDetails.lastName,UserTypeStatus.StatusCode,UserDetails.CreatedDate,UserDetails.ModifiedDate,UserDetails.IsDeleted FROM UserDetails INNER JOIN UserTypeStatus ON UserTypeStatus.TypeId = UserDetails.UserTypeId WHERE UserTypeStatus.StatusCode = @UserType AND CreatedDate BETWEEN convert(date,@fromDate,103) and convert(date,@toDate,103) ORDER BY firstname ASC;";
+            using (SqlCommand cmd = new SqlCommand(updateQuery, conn))
             {
                 cmd.CommandType = CommandType.Text;
                 //UserDetails.Email,UserDetails.firstName,UserDetails.lastName,UserTypeStatus.StatusCode,UserDetails.CreatedDate,UserDetails.ModifiedDate
@@ -78,12 +94,9 @@ namespace RESTServices.DAO
                                 UserStatus = reader["StatusCode"].ToString(),
                             }
                         );
-                        Debug.WriteLine(UserInfo.Count);
-                        conn.Close();
-                        return UserInfo;
                     }
                     conn.Close();
-                    return null;
+                    return UserInfo;
                 }
             }
         }
